@@ -19,15 +19,13 @@ pipeline {
                 steps {
                     script {
                         def customImage = docker.build("anumshr/my-image:${env.BUILD_ID}")
-                        customImage.push()
-                        customImage.push('latest')
                     }
                 }
          }
          stage('Push image to dockerhub'){
                 steps {
                         script {
-                                docker.withRegistry('', 'dockerhub_credentials') { 
+                                docker.withRegistry( '', 'dockerhub_credentials') { 
                                         /* Push the container to the custom Registry */
                                         customImage.push()
                         }
