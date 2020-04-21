@@ -25,7 +25,7 @@ pipeline {
          stage('Push image to dockerhub'){
                 steps {
                         script {
-                                docker.withRegistry( 'http://hub.docker.com', 'dockerhub') { 
+                                docker.withRegistry( 'http://hub.docker.com', credentials:'dockerhub') { 
                                         /* Push the container to the custom Registry */
                                         customImage.push()
                         }
