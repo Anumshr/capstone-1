@@ -37,7 +37,7 @@ pipeline {
                 }
          }
          }
-         stage ('Adding to Kubernetes Cluster'){
+         stage('Adding to Kubernetes Cluster'){
             steps{
                     withAWS(credentials: 'awscred', region: 'us-west-2'){
                     sh '''
@@ -46,43 +46,3 @@ pipeline {
                 }
                 }
                 }
-        stage ('applyconfig file'){
-            steps{
-            withAWS(credentials: 'awscred', region: 'us-west-2'){
-                sh '''
-                            kubectl apply -f aws-auth-cm.yaml
-                            '''
-            }
-        }
-        stage ('Blue container deployed'){
-            steps{
-               withAWS(credentials: 'awscred', region: 'us-west-2'){
-               sh '''
-                    kubectl apply -f ./blue-controller.json
-                    '''
-               } 
-            }
-        }
-        stage ('Green container deployed'){
-            steps{
-               withAWS(credentials: 'awscred', region: 'us-west-2'){
-               sh '''
-                    kubectl apply -f ./green-controller.json
-                    '''
-               } 
-            }
-        }
-        stage ('Create Blue Service'){
-            steps{
-               withAWS(credentials: 'awscred', region: 'us-west-2'){
-               sh '''
-                    kubectl apply -f ./blue-service.json
-                    '''
-               } 
-            }
-        }
-
-
-}
-}
-}
