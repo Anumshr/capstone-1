@@ -1,6 +1,6 @@
 pipeline {
     environment {
-    registry = "anumshr/greendep"
+    registry = "anumshr/bluedep"
     registryCredential = 'dockerhub'
       }
      agent any
@@ -22,21 +22,67 @@ pipeline {
          stage('Create Docker image'){
                 steps {
                     script {
-                        customeImage = docker.build registry + ":$BUILD_NUMBER"  
+                        customeImage = docker.build registry  
                     }
                 }
          }
          
-         
+         stage('Push image to dockerhub'){
+                steps {
+                        script {
+                                docker.withRegistry( 'http://hub.docker.com', registryCredential) { 
+                                        /* Push the container to the custom Registry */
+                                        customImage.push()
+                        }
+                }
+         }
+         }
          stage ('Adding to Kubernetes Cluster'){
             steps{
                     withAWS(credentials: 'awscred', region: 'us-west-2'){
-                        sh '''
+                    sh '''
                         aws eks --region us-west-2 update-kubeconfig --name nginxcluster
-                        '''   
+                     '''      
                 }
                 }
                 }
-       
+        stage ('applyconfig file'){
+            steps{
+            withAWS(credentials: 'awscred', region: 'us-west-2'){
+                sh '''
+                            kubectl apply -f aws-auth-cm.yaml
+                            '''
+            }
+        }
+        stage ('Blue container deployed'){
+            steps{
+               withAWS(credentials: 'awscred', region: 'us-west-2'){
+               sh '''
+                    kubectl apply -f ./blue-controller.json
+                    '''
+               } 
+            }
+        }
+        stage ('Green container deployed'){
+            steps{
+               withAWS(credentials: 'awscred', region: 'us-west-2'){
+               sh '''
+                    kubectl apply -f ./green-controller.json
+                    '''
+               } 
+            }
+        }
+        stage ('Create Blue Service'){
+            steps{
+               withAWS(credentials: 'awscred', region: 'us-west-2'){
+               sh '''
+                    kubectl apply -f ./blue-service.json
+                    '''
+               } 
+            }
+        }
+
+
+}
 }
 }
