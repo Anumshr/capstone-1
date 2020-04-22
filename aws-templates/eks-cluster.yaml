@@ -1,0 +1,19 @@
+---
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'Amazon EKS CLUSTER creation '
+Resources:
+  myCluster:
+    Type: 'AWS::EKS::Cluster'
+    Properties:
+      Name: nginxcluster
+      Version: '1.15'
+      RoleArn: >-
+        arn:aws:iam::778131191650:role/EKSrole
+      ResourcesVpcConfig:
+        SecurityGroupIds:
+          - sg-0e267d65abb767c56
+        SubnetIds:
+            - subnet-040e85939254cd76e
+            - subnet-0de15c37f1f292953
+            - subnet-0f3218d2234988cd8
+            - subnet-099f80d57bbb1a82e
