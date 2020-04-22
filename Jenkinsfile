@@ -50,7 +50,7 @@ pipeline {
             steps{
                withAWS(credentials: 'awscred', region: 'us-west-2'){
                sh '''
-                    kubectl apply -f ./blue-service.json
+                    kubectl apply -f ./blue-greenloadbalancerservice.json
                     '''
                } 
             }
