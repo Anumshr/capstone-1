@@ -37,15 +37,6 @@ pipeline {
                 }
                 }
                 }
-        stage ('applyconfig file'){
-            steps{
-            withAWS(credentials: 'awscred', region: 'us-west-2'){
-                sh '''
-                            kubectl apply -f aws-auth-cm.yaml
-                            '''
-            }
-        }
-
-}
+       
 }
 }
