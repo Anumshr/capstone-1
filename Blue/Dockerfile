@@ -5,4 +5,4 @@ FROM nginx
 RUN rm /usr/share/nginx/html/index.html
 
 #Copying the own inde.html file
-COPY . index.html /usr/share/nginx/html/
+COPY index.html /usr/share/nginx/html/
