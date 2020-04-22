@@ -1,4 +1,8 @@
 pipeline {
+    environment {
+    registry = "anumshr/greendep"
+    registryCredential = 'dockerhub'
+      }
      agent any
      stages {
          stage('Build') {
@@ -18,14 +22,14 @@ pipeline {
          stage('Create Docker image'){
                 steps {
                     script {
-                        def customImage = docker.build("anumshr/my-image:${env.BUILD_ID}")
+                        customeImage = docker.build registry + ":$BUILD_NUMBER"  
                     }
                 }
          }
          stage('Push image to dockerhub'){
                 steps {
                         script {
-                                docker.withRegistry( 'http://hub.docker.com', 'dockerhub1') { 
+                                docker.withRegistry( 'http://hub.docker.com', registryCredential) { 
                                         /* Push the container to the custom Registry */
                                         customImage.push()
                         }
