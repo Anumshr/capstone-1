@@ -5,14 +5,26 @@ pipeline {
       }
      agent any
      stages {
-         stage('Blue container deployed'){
-            steps {
-               withAWS(credentials: 'awscred', region: 'us-west-2'){
-               sh '''
-                    kubectl apply -f ./blue-controller.json
-                    '''
-               } 
-            }
-        }
+         stage('Build') {
+             steps {
+                 sh 'echo "Hello World"'
+                 sh '''
+                     echo "Multiline shell steps works too"
+                     ls -lah
+                 '''
+             }
+         }
+         stage('Lint HTML') {
+              steps {
+                  sh 'tidy -q -e *.html'
+              }
+         }
+         stage('Create Docker image'){
+                steps {
+                    script {
+                        customeImage = docker.build registry  
+                    }
+                }
+         }
 }
 }
