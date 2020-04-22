@@ -1,6 +1,6 @@
 pipeline {
     environment {
-    registry = "anumshr/bluedep"
+    registry = "anumshr/capstone"
     registryCredential = 'dockerhub'
       }
      agent any
@@ -14,7 +14,7 @@ pipeline {
                  '''
              }
          }
-         stage('Lint HTML') 
+         stage('Lint HTML') {
               steps {
                   sh 'tidy -q -e *.html'
               }
@@ -22,19 +22,21 @@ pipeline {
          stage('Create Docker image'){
                 steps {
                     script {
-                        customeImage = docker.build registry 
+                        customeImage = docker.build registry  
                     }
                 }
          }
+         
          stage('Push image to dockerhub'){
                 steps {
                       withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'dockerhub', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD']]){
-                    sh '''
-                        docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
-                        docker push anumshr/capstone
-                    '''  
+                            sh '''
+                            docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+                            docker push anumshr/capstone
+                            '''  
+                            }
+                    }
                 }
-                }
-                }
+         
 }
 }
