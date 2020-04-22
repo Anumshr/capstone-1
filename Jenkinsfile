@@ -26,6 +26,7 @@ pipeline {
                     }
                 }
          }
+         
          stage('Push image to dockerhub'){
                 steps {
                         script {
@@ -36,6 +37,23 @@ pipeline {
                 }
          }
          }
+         stage ('Adding to Kubernetes Cluster'){
+            steps{
+                    withAWS(credentials: 'awscred', region: 'us-west-2'){
+                        sh '''
+                            aws eks --region us-west-2 update-kubeconfig --name nginxcluster
+                            '''
+                }
+                }
+                }
+        stage ('applyconfig file'){
+            steps{
+            withAWS(credentials: 'awscred', region: 'us-west-2'){
+                        sh '''
+                            kubectl apply -f aws-auth-cm.yaml
+                            '''
+            }
+        }
 
 }
 }
