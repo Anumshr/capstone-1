@@ -46,6 +46,20 @@ pipeline {
                 }
                 }
                 }
+        stage('create docker images for blue-green'){
+            steps{
+                withAWS(credentials: 'awscred', region: 'us-west-2'){
+                    sh '''
+                        cd Blue
+                        ./run_docker.sh
+                        cd ..
+                        cd Green
+                        ./run_docker.sh
+                    '''
+                }
+            }
+        }
+          
          stage('Create Service'){
             steps{
                withAWS(credentials: 'awscred', region: 'us-west-2'){
