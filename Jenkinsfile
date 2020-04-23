@@ -46,20 +46,25 @@ pipeline {
                 }
                 }
                 }
-        stage('create docker images for blue-green'){
+        stage('running replication controller pods -blue '){
             steps{
                 withAWS(credentials: 'awscred', region: 'us-west-2'){
-                    sh '''
-                        cd Blue
-                        ./run_docker.sh
-                        cd ..
-                        cd Green
-                        ./run_docker.sh
+               sh '''
+                    kubectl apply -f ./blue-controller.json
                     '''
-                }
+               } 
             }
         }
-          
+        stage('running replication controller pods -green '){
+            steps{
+                withAWS(credentials: 'awscred', region: 'us-west-2'){
+               sh '''
+                    kubectl apply -f ./green-controller.json
+                    '''
+               } 
+            }
+        }
+
          stage('Create Service'){
             steps{
                withAWS(credentials: 'awscred', region: 'us-west-2'){
