@@ -38,6 +38,7 @@ pipeline {
                     }
                 }
          stage("install kubectl"){
+            steps{
             withAWS(credentials: 'awscred', region: 'us-west-2'){
                 sh '''
                     curl -o kubectl https://amazon-eks.s3.us-west-2.amazonaws.com/1.15.10/2020-02-22/bin/linux/amd64/kubectl
@@ -46,7 +47,7 @@ pipeline {
                     echo 'export PATH=$PATH:$HOME/bin' >> ~/.bashrc
 
                 '''
-            }
+            }}
          }
          stage('Adding to Kubernetes Cluster'){
             steps{
